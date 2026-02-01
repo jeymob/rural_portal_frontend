@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Health — Сельский Портал</title>
+  <style>body{font-family:Arial,Helvetica,sans-serif;padding:24px}</style>
+</head>
+<body>
+  <h1>/health</h1>
+  <p>Данные health от бэкенда (через `/api/health`):</p>
+  <pre id="out">загрузка...</pre>
+
+  <script>
+    async function load(){
+      try{
+        const res = await fetch('/api/health');
+        const json = await res.json();
+        document.getElementById('out').textContent = JSON.stringify(json, null, 2);
+      }catch(e){
+        document.getElementById('out').textContent = 'Ошибка: '+e.message;
+      }
+    }
+    load();
+  </script>
+</body>
+</html>
