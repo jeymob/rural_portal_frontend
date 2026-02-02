@@ -1,22 +1,26 @@
-import React, { useState } from 'react'
+import { Routes, Route, Navigate } from 'react-router-dom';
+import Header from './components/Header';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Register from './pages/Register';
 
-export default function App() {
-    const [status, setStatus] = useState(null)
-    const checkHealth = async () => {
-        try {
-            const res = await fetch('/health')
-            const json = await res.json()
-            setStatus(JSON.stringify(json))
-        } catch (err) {
-            setStatus('error: ' + err.message)
-        }
-    }
+function App() {
     return (
-        <div style={{ padding: 24, fontFamily: 'Arial, sans-serif' }}>
-            <h1>Сельский Портал — Frontend</h1>
-            <p>Пример: проверка health API</p>
-            <button onClick={checkHealth}>Проверить /health</button>
-            <pre style={{ marginTop: 12 }}>{status}</pre>
+        <div className="min-h-screen bg-gray-50">
+            <Header />
+
+            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    {/* Позже добавим */}
+                    {/* <Route path="/ads" element={<Ads />} /> */}
+                    <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
+            </main>
         </div>
-    )
+    );
 }
+
+export default App;
