@@ -1,10 +1,35 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 import Header from './components/Header';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ProtectedRoute from './components/ProtectedRoute';
+import { useAuth } from './context/AuthContext';
 
-function App() {
+const Announcements = () => (
+    <div className="max-w-7xl mx-auto px-4 py-8">
+        <h1 className="text-3xl font-bold mb-6">Объявления</h1>
+        <p>Здесь будут все объявления (когда добавим)</p>
+    </div>
+);
+
+export default function App() {
+    const { login } = useAuth();
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    useEffect(() => {
+        const urlParams = new URLSearchParams(location.search);
+        const token = urlParams.get('access_token');
+
+        if (token) {
+            localStorage.setItem('access_token', token);
+            login(token);
+            navigate('/', { replace: true });
+        }
+    }, [location, login, navigate]);
+
     return (
         <div className="min-h-screen bg-gray-50">
             <Header />
@@ -13,14 +38,15 @@ function App() {
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/login" element={<Login />} />
-                    <Route path="/register" element={<Register />} />
-                    {/* Позже добавим */}
-                    {/* <Route path="/ads" element={<Ads />} /> */}
-                    <Route path="*" element={<Navigate to="/" replace />} />
+                    <Route path="/register" element={<Register />} /> {/* редирект на /login */}
+
+                    <Route element={<ProtectedRoute />}>
+                        <Route path="/announcements" element={<Announcements />} />
+                    </Route>
+
+                    <Route path="*" element={<div className="text-center py-20">404 — страница не найдена</div>} />
                 </Routes>
             </main>
         </div>
     );
 }
-
-export default App;

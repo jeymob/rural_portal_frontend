@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect, useContext } from 'react';
+import api from '../api/axios';
 
 const AuthContext = createContext();
 
@@ -6,23 +7,33 @@ export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    // Проверка токена при запуске приложения
     useEffect(() => {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('access_token');
         if (token) {
-            // Здесь можно сделать запрос /me для проверки токена
-            // пока просто считаем, что если токен есть → авторизован
-            setUser({ token }); // позже добавим username, role и т.д.
+            api.get('/me')
+                .then((res) => {
+                    setUser(res.data);
+                })
+                .catch(() => {
+                    localStorage.removeItem('access_token');
+                    setUser(null);
+                })
+                .finally(() => setLoading(false));
+        } else {
+            setLoading(false);
         }
-        setLoading(false);
     }, []);
 
-    const login = (token) => {
-        localStorage.setItem('token', token);
-        setUser({ token });
+    const login = (accessToken) => {
+        localStorage.setItem('access_token', accessToken);
+        api.get('/me')
+            .then((res) => setUser(res.data))
+            .catch(() => localStorage.removeItem('access_token'));
     };
 
     const logout = () => {
-        localStorage.removeItem('token');
+        localStorage.removeItem('access_token');
         setUser(null);
     };
 

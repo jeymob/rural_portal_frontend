@@ -1,115 +1,65 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 
 export default function Login() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
-    const [loading, setLoading] = useState(false);
-
     const { login } = useAuth();
     const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError('');
-        setLoading(true);
+    // Обработка токена после редиректа от Яндекса или ВК
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('access_token');
 
-        try {
-            const response = await axios.post('/api/login', {
-                email,
-                password,
-            });
-
-            const { token } = response.data;
-
-            // Сохраняем токен и обновляем состояние
+        if (token) {
+            localStorage.setItem('access_token', token);
             login(token);
-
-            // Редирект на главную или в личный кабинет
-            navigate('/');
-        } catch (err) {
-            setError(
-                err.response?.data?.message ||
-                'Ошибка входа. Проверьте email и пароль.'
-            );
-        } finally {
-            setLoading(false);
+            navigate('/', { replace: true }); // убираем параметры из URL
         }
+    }, [login, navigate]);
+
+    const handleYandexLogin = () => {
+        window.location.href = 'http://localhost:8080/api/auth/yandex';
+    };
+
+    const handleVkLogin = () => {
+        window.location.href = 'http://localhost:8080/api/auth/vk';
     };
 
     return (
-        <div className="max-w-md mx-auto mt-10">
-            <div className="bg-white py-8 px-10 shadow-xl rounded-xl border border-gray-100">
-                <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">
-                    Вход в сельский портал
-                </h2>
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-2xl shadow-xl border border-gray-100">
+                <div className="text-center">
+                    <h1 className="text-4xl font-bold text-indigo-600">Сельский портал</h1>
+                    <h2 className="mt-6 text-2xl font-semibold text-gray-900">
+                        Вход в аккаунт
+                    </h2>
+                    <p className="mt-2 text-sm text-gray-500">
+                        Выберите способ входа
+                    </p>
+                </div>
 
-                {error && (
-                    <div className="mb-6 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
-                        {error}
-                    </div>
-                )}
+                <div className="mt-8 space-y-4">
+                    <button
+                        type="button"
+                        onClick={handleYandexLogin}
+                        className="w-full py-4 px-6 rounded-xl bg-yellow-500 text-white font-semibold text-lg hover:bg-yellow-600 transition-all shadow-md active:scale-[0.98]"
+                    >
+                        Войти через Яндекс
+                    </button>
 
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    <div>
-                        <label
-                            htmlFor="email"
-                            className="block text-sm font-medium text-gray-700 mb-1"
-                        >
-                            Email
-                        </label>
-                        <input
-                            id="email"
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            className="appearance-none block w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            placeholder="example@rural.local"
-                            required
-                        />
-                    </div>
+                    <button
+                        type="button"
+                        onClick={handleVkLogin}
+                        className="w-full py-4 px-6 rounded-xl bg-blue-600 text-white font-semibold text-lg hover:bg-blue-700 transition-all shadow-md active:scale-[0.98]"
+                    >
+                        Войти через ВКонтакте
+                    </button>
+                </div>
 
-                    <div>
-                        <label
-                            htmlFor="password"
-                            className="block text-sm font-medium text-gray-700 mb-1"
-                        >
-                            Пароль
-                        </label>
-                        <input
-                            id="password"
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className="appearance-none block w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            placeholder="••••••••"
-                            required
-                        />
-                    </div>
-
-                    <div>
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${loading
-                                ? 'bg-indigo-400 cursor-not-allowed'
-                                : 'bg-indigo-600 hover:bg-indigo-700'
-                                } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors`}
-                        >
-                            {loading ? 'Вход...' : 'Войти'}
-                        </button>
-                    </div>
-
-                    <div className="text-center text-sm text-gray-600">
-                        Нет аккаунта?{' '}
-                        <a href="/register" className="text-indigo-600 hover:text-indigo-500 font-medium">
-                            Зарегистрироваться
-                        </a>
-                    </div>
-                </form>
+                <div className="text-center text-sm text-gray-600 pt-6">
+                    Нет аккаунта? Просто выберите любой способ выше — регистрация автоматическая
+                </div>
             </div>
         </div>
     );

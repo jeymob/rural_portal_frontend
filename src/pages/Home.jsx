@@ -14,7 +14,7 @@ export default function Home() {
                 <div className="relative max-w-7xl mx-auto px-6 pt-16 pb-24 lg:pt-24 lg:pb-32 lg:px-8">
                     <div className="text-center">
                         <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-gray-900">
-                            <span className="block">Сельский портал</span>
+                            <span className="block">Zian</span>
                             <span className="block mt-2 text-indigo-600">Всё своё — рядом</span>
                         </h1>
 
