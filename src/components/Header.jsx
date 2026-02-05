@@ -10,6 +10,11 @@ export default function Header() {
         navigate('/');
     };
 
+    // Формируем отображаемое имя
+    const displayName = user
+        ? user.name?.split('@')[0] || 'Пользователь'
+        : null;
+
     return (
         <header className="bg-white shadow">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -17,7 +22,7 @@ export default function Header() {
                     {/* Логотип */}
                     <div className="flex items-center">
                         <Link to="/" className="text-2xl font-bold text-indigo-600">
-                            Zian
+                            Зиан
                         </Link>
                     </div>
 
@@ -34,11 +39,11 @@ export default function Header() {
                         {user ? (
                             <div className="flex items-center space-x-6">
                                 <span className="text-gray-700 font-medium">
-                                    {user.username || user.email?.split('@')[0] || 'Пользователь'}
+                                    {displayName}
                                 </span>
                                 <button
                                     onClick={handleLogout}
-                                    className="text-red-600 hover:text-red-800 font-medium"
+                                    className="text-red-600 hover:text-red-800 font-medium transition"
                                 >
                                     Выйти
                                 </button>
@@ -49,10 +54,10 @@ export default function Header() {
                                     Войти
                                 </Link>
                                 <Link
-                                    to="/register"
+                                    to="/login"  // регистрация тоже ведёт на вход
                                     className="px-5 py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
                                 >
-                                    Регистрация
+                                    Зарегистрироваться
                                 </Link>
                             </div>
                         )}

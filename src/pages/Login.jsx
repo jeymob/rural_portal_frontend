@@ -12,11 +12,13 @@ export default function Login() {
         const token = urlParams.get('access_token');
 
         if (token) {
+            console.log('Найден токен после редиректа:', token);
             localStorage.setItem('access_token', token);
             login(token);
-            navigate('/', { replace: true }); // убираем параметры из URL
+            // Чистим URL от параметров
+            navigate('/', { replace: true });
         }
-    }, [login, navigate]);
+    }, [navigate, login]);
 
     const handleYandexLogin = () => {
         window.location.href = 'http://localhost:8080/api/auth/yandex';
@@ -35,11 +37,11 @@ export default function Login() {
                         Вход в аккаунт
                     </h2>
                     <p className="mt-2 text-sm text-gray-500">
-                        Выберите способ входа
+                        Войдите через Яндекс или ВКонтакте
                     </p>
                 </div>
 
-                <div className="mt-8 space-y-4">
+                <div className="mt-10 space-y-4">
                     <button
                         type="button"
                         onClick={handleYandexLogin}
@@ -57,8 +59,9 @@ export default function Login() {
                     </button>
                 </div>
 
-                <div className="text-center text-sm text-gray-600 pt-6">
-                    Нет аккаунта? Просто выберите любой способ выше — регистрация автоматическая
+                <div className="text-center text-sm text-gray-600 mt-8">
+                    Нет аккаунта? Просто войдите через любой из способов выше —
+                    регистрация произойдёт автоматически
                 </div>
             </div>
         </div>

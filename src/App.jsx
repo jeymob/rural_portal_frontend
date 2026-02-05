@@ -15,20 +15,29 @@ const Announcements = () => (
 );
 
 export default function App() {
-    const { login } = useAuth();
+    const { login, user } = useAuth(); // добавили user для лога
     const navigate = useNavigate();
     const location = useLocation();
 
     useEffect(() => {
+        console.log('App: location изменился →', location.pathname, location.search);
+
         const urlParams = new URLSearchParams(location.search);
         const token = urlParams.get('access_token');
 
+        console.log('App: токен в URL →', token);
+
         if (token) {
+            console.log('App: сохраняем токен →', token);
             localStorage.setItem('access_token', token);
             login(token);
             navigate('/', { replace: true });
         }
-    }, [location, login, navigate]);
+    }, [location.search, login, navigate]);
+
+    useEffect(() => {
+        console.log('App: текущий user в контексте →', user);
+    }, [user]);
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -38,7 +47,7 @@ export default function App() {
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/login" element={<Login />} />
-                    <Route path="/register" element={<Register />} /> {/* редирект на /login */}
+                    <Route path="/register" element={<Register />} />
 
                     <Route element={<ProtectedRoute />}>
                         <Route path="/announcements" element={<Announcements />} />

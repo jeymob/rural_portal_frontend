@@ -1,6 +1,6 @@
 # rural_portal_frontend
 
-Минимальный фронтенд для проекта "Zian" (React + Vite).
+Минимальный фронтенд для проекта "Зиан" (React + Vite).
 
 Local dev:
 
