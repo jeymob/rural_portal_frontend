@@ -3,7 +3,6 @@ import { useEffect } from 'react';
 import Header from './components/Header';
 import Home from './pages/Home';
 import Login from './pages/Login';
-import Register from './pages/Register';
 import ProtectedRoute from './components/ProtectedRoute';
 import { useAuth } from './context/AuthContext';
 
@@ -20,22 +19,6 @@ export default function App() {
     const location = useLocation();
 
     useEffect(() => {
-        console.log('App: location изменился →', location.pathname, location.search);
-
-        const urlParams = new URLSearchParams(location.search);
-        const token = urlParams.get('access_token');
-
-        console.log('App: токен в URL →', token);
-
-        if (token) {
-            console.log('App: сохраняем токен →', token);
-            localStorage.setItem('access_token', token);
-            login(token);
-            navigate('/', { replace: true });
-        }
-    }, [location.search, login, navigate]);
-
-    useEffect(() => {
         console.log('App: текущий user в контексте →', user);
     }, [user]);
 
@@ -47,7 +30,6 @@ export default function App() {
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/login" element={<Login />} />
-                    <Route path="/register" element={<Register />} />
 
                     <Route element={<ProtectedRoute />}>
                         <Route path="/announcements" element={<Announcements />} />

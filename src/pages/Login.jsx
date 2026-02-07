@@ -1,25 +1,4 @@
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-
 export default function Login() {
-    const { login } = useAuth();
-    const navigate = useNavigate();
-
-    // Обработка токена после редиректа от Яндекса или ВК
-    useEffect(() => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const token = urlParams.get('access_token');
-
-        if (token) {
-            console.log('Найден токен после редиректа:', token);
-            localStorage.setItem('access_token', token);
-            login(token);
-            // Чистим URL от параметров
-            navigate('/', { replace: true });
-        }
-    }, [navigate, login]);
-
     const handleYandexLogin = () => {
         window.location.href = 'http://localhost:8080/api/auth/yandex';
     };
@@ -29,40 +8,33 @@ export default function Login() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-2xl shadow-xl border border-gray-100">
-                <div className="text-center">
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+            <div className="max-w-md w-full bg-white p-10 rounded-2xl shadow-xl border border-gray-200">
+                <div className="text-center mb-10">
                     <h1 className="text-4xl font-bold text-indigo-600">Сельский портал</h1>
-                    <h2 className="mt-6 text-2xl font-semibold text-gray-900">
-                        Вход в аккаунт
-                    </h2>
-                    <p className="mt-2 text-sm text-gray-500">
-                        Войдите через Яндекс или ВКонтакте
-                    </p>
+                    <h2 className="mt-4 text-2xl font-semibold text-gray-900">Вход</h2>
+                    <p className="mt-2 text-gray-600">Войдите через Яндекс или ВКонтакте</p>
                 </div>
 
-                <div className="mt-10 space-y-4">
+                <div className="space-y-4">
                     <button
-                        type="button"
                         onClick={handleYandexLogin}
-                        className="w-full py-4 px-6 rounded-xl bg-yellow-500 text-white font-semibold text-lg hover:bg-yellow-600 transition-all shadow-md active:scale-[0.98]"
+                        className="w-full py-4 px-6 rounded-xl bg-yellow-500 text-white font-semibold hover:bg-yellow-600 transition shadow-md active:scale-98"
                     >
                         Войти через Яндекс
                     </button>
 
                     <button
-                        type="button"
                         onClick={handleVkLogin}
-                        className="w-full py-4 px-6 rounded-xl bg-blue-600 text-white font-semibold text-lg hover:bg-blue-700 transition-all shadow-md active:scale-[0.98]"
+                        className="w-full py-4 px-6 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition shadow-md active:scale-98"
                     >
                         Войти через ВКонтакте
                     </button>
                 </div>
 
-                <div className="text-center text-sm text-gray-600 mt-8">
-                    Нет аккаунта? Просто войдите через любой из способов выше —
-                    регистрация произойдёт автоматически
-                </div>
+                <p className="text-center text-sm text-gray-600 mt-8">
+                    Нет аккаунта? Просто войдите — регистрация автоматическая
+                </p>
             </div>
         </div>
     );

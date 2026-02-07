@@ -10,10 +10,8 @@ export default function Header() {
         navigate('/');
     };
 
-    // Формируем отображаемое имя
-    const displayName = user
-        ? user.name?.split('@')[0] || 'Пользователь'
-        : null;
+    // Отображаем имя (Name или fallback)
+    const displayName = user?.Name || user?.username || user?.email?.split('@')[0] || 'Пользователь';
 
     return (
         <header className="bg-white shadow">
@@ -52,12 +50,6 @@ export default function Header() {
                             <div className="flex items-center space-x-6">
                                 <Link to="/login" className="text-gray-700 hover:text-indigo-600">
                                     Войти
-                                </Link>
-                                <Link
-                                    to="/login"  // регистрация тоже ведёт на вход
-                                    className="px-5 py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
-                                >
-                                    Зарегистрироваться
                                 </Link>
                             </div>
                         )}
